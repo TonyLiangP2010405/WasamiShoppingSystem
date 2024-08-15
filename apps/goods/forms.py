@@ -180,7 +180,6 @@ class ProductInfoChange(forms.ModelForm):
                 "class": "form-control"
             }),
             "main_image": forms.widgets.FileInput(attrs={
-                "class": 'custom-file-input'
             }),
             "category": forms.widgets.Select(attrs={
                 "class": "form-control"
@@ -189,16 +188,16 @@ class ProductInfoChange(forms.ModelForm):
                 "class": "form-control"
             }),
             "photo1": forms.widgets.FileInput(attrs={
-                "class": 'custom-file-input'
+
             }),
             "photo2": forms.widgets.FileInput(attrs={
-                "class": 'custom-file-input'
+
             }),
             "photo3": forms.widgets.FileInput(attrs={
-                "class": 'custom-file-input'
+
             }),
             "photo4": forms.widgets.FileInput(attrs={
-                "class": 'custom-file-input'
+
             }),
         }
         error_messages = {
