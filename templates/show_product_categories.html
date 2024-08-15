@@ -1,0 +1,22 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% block content %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>category_id</th>
+                <th>category_name</th>
+                <th>createDate</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for category in categories %}
+                <tr>
+                    <td><a href="{% url 'category_detail' category.category_id %}">{{ category.category_id }}</a></td>
+                    <td>{{ category.name }}</td>
+                    <td>{{ category.createDate }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

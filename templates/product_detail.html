@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+        {% csrf_token %}
+        <div id="product_id">{{ product.0.product_id }}</div>
+        <div>{{ product.0.name }}</div>
+        <div>{{ product.0.price }}</div>
+        <div>{{ product.0.category.name }}</div>
+        <div>{{ product.0.property1 }}</div>
+        <div>{{ product.0.property2 }}</div>
+        {% if  product.0.main_image|length is 0 %}
+            <div>the main image is empty</div>
+        {% else %}
+            <div><img src="/media/{{ img_url }}" alt="main_image" width="100" height="100"></div>
+        {% endif %}
+        {% if product.0.photo1|length is 0 %}
+            <div> the photo1 is empty</div>
+        {% else %}
+            <div><img src="/media/{{ product.0.photo1 }}" alt="photo1" width="100" height="100"></div>
+        {% endif %}
+        {% if product.0.photo2|length is 0 %}
+            <div> the photo2 is empty</div>
+        {% else %}
+            <div><img src="/media/{{ product.0.photo2 }}" alt="photo2" width="100" height="100"></div>
+        {% endif %}
+        {% if product.0.photo3|length is 0 %}
+            <div>the photo3 is empty</div>
+        {% else %}
+            <div><img src="/media/{{ product.0.photo3 }}" alt="photo3" width="100" height="100"></div>
+        {% endif  %}
+        {% if product.0.photo4|length is 0 %}
+            <div>the photo4 is empty</div>
+        {% else %}
+            <div><img src="/media/{{ product.0.photo4 }}" alt="photo4" width="100" height="100"></div>
+        {% endif %}
+        {% if request.user.is_authenticated %}
+            {% if request.user.is_superuser %}
+            {% else %}
+                <div>
+                    <input id="add_shopping_cart" type="button" value="Add to shopping cart">
+                </div>
+            {% endif %}
+        {% else %}
+           <button><a href="{% url 'login2' product.0.product_id %}">Add to shopping cart</a></button>
+        {% endif %}
+    <script>
+        $("#add_shopping_cart").click(function (){
+            $.ajax({
+                url:"/shoppingCart/ajax_shopping_cart_data/",
+                type:"POST",
+                data:{
+                    product_id: {{ product.0.product_id }},
+                    "csrfmiddlewaretoken": $("[name = 'csrfmiddlewaretoken']").val(),
+
+                },
+                success: function (data) {
+                    if (data["warning"]){
+                        alert(data["warning"])
+                    }
+                    if (data["code"] === 1){
+                        window.location = data["url"]
+                    }
+                    if(data["msg"] && data["code"] === 0){
+                        alert(data["msg"])
+                    }
+                },
+                error: function (jqXHR, textStatus, err) {
+                    console.log(arguments)
+                }
+            })
+        })
+    </script>
+{% endblock %}

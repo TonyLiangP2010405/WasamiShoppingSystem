@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <h1>This is home page</h1>
+    <form>
+        {% csrf_token %}
+        <label for="product_name">Search</label>
+        <input type="text" id="product_name">
+        <input type="button" id="search" value="search">
+    </form>
+    <button><a href="{% url 'homePage_filter' %}">filter</a></button>
+    <div>
+        <table class="table table-light">
+            <thead>
+                <tr>
+                    <th>Product ID</th>
+                    <th>Product Name</th>
+                    <th>Product Category Name</th>
+                    <th>Product category ID</th>
+                    <th>Product Price</th>
+                    <th>Main image</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                    <tr>
+                        <td><a  href="{% url 'product_detail' product.product_id %}">{{ product.product_id }}</a></td>
+                        <td>{{ product.name }}</td>
+                        <td>{{ product.category.name }}</td>
+                        <td>{{ product.category.category_id }}</td>
+                        <td>{{ product.price }}</td>
+                        {% if  product.main_image|length is 0 %}
+                            <td>the main image is empty</td>
+                        {% else %}
+                            <td><img width="100" height="100" src="/media/{{ product.main_image }}" alt="main_image"></td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <nav aria-label="Contacts Page Navigation">
+        <ul class="pagination justify-content-center m-2">
+            {% if products.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ products.previous_page_number }}">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+            {% for pg in products.paginator.page_range %}
+                {% if products.number == pg %}
+                    <li class="page-item active">
+                        <a class="page-link" href="">{{ pg }}</a>
+                    </li>
+                {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ pg }}">
+                            {{ pg }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            {% if products.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ products.next_page_number }}">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+    <script>
+        $("#search").click(function () {
+            $.ajax({
+                url: '/ajax_search/',
+                method: 'POST',
+                data: {
+                   "csrfmiddlewaretoken": $("[name = 'csrfmiddlewaretoken']").val(),
+                    "product_name": $("#product_name").val(),
+                },
+                success(data){
+                    window.location = data["url"]
+                },
+                error(e){
+                    console.log(e)
+                }
+            })
+        })
+    </script>
+{% endblock %}

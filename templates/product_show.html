@@ -1,0 +1,229 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% block content %}
+    <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.js' %}"></script>
+    <script src="{% static 'plugins/bootstrap-table/bootstrap-table.min.css' %}"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/js/bootstrap.bundle.min.js"></script>
+<div class="content-wrapper">
+    <div class="content-header">
+        <div class="container-fluid">
+            <div>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <h1 class="m-0">
+                            Product pattern <small>list</small>
+                        </h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12 search-collapse">
+                <form id="search_form">
+                    <div class="select-list">
+                        <ul style="list-style-type: none">
+                            <li>
+                                <label>Product name: </label>
+                                <input class="form-control me-2"  type="text" id="product_name" name="product_name" value="" />
+                            </li>
+                            <li>
+                                <label>Product ID:</label>
+                                <input class="form-control me-2"  type="text" id="product_id" name="product_id" value="">
+                            </li>
+                            <li>
+                                <a  class="btn btn-primary btn-rounded btn-sm" id="btn_search"><i class="fa fa-search"></i>Search</a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </div>
+            <div class="col-sm-12 select-table table-striped">
+                <div class="btn-group-sm" id="toolbar" role="group">
+                    <a class="btn btn-success" href="{% url 'add_product' %}">
+                        <i class="fa fa-plus"></i> Add Product
+                    </a>
+                </div>
+            </div>
+            <table id="bootstrap-table"></table>
+        </div>
+    </div>
+</section>
+ <div class="container mt-3">
+</div>
+
+<!-- 模态框 -->
+<div class="modal" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- 模态框头部 -->
+      <div class="modal-header">
+        <h4 class="modal-title">模态框标题</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- 模态框内容 -->
+      <div class="modal-body">
+        模态框内容..
+      </div>
+
+      <!-- 模态框底部 -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">关闭</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+<div class="modal" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- header -->
+      <div class="modal-header">
+        <h4 class="modal-title">模态框标题</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- content -->
+      <div class="modal-body">
+        模态框内容..
+      </div>
+
+      <!-- bottom -->
+      <div class="modal-footer">
+          <button type="button" class="btn-success"><a href=""></a></button>
+        <button type="button" class="btn " data-bs-dismiss="modal">cancel</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'plugins/bootstrap-table/bootstrap-table.min.js' %}"></script>
+<script src="{% static 'plugins/bootstrap-table/bootstrap-table.min.css' %}"></script>
+<script>
+    InitMainTable();
+    function InitMainTable() {
+        $('#bootstrap-table').bootstrapTable({
+            url: '/products/ajax_products/',
+            method: 'get',
+            toolbar:'#toolbar',
+            striped: true,
+            cache: false,
+            pagination: true,
+            sortable: false,
+            sortOrder: "asc",
+            visible: true,
+            queryParams: function (params) {
+                var temp = {
+                  page:(params.offset / params.limit) + 1,
+                  name: $("#product_name").val(),
+                  product_id: $("#product_id").val(),
+                };
+                return temp;
+            },
+            sidePagination: "server",
+            pageNumber: 1,
+            pageSize: 5,
+            showColumns: true,
+            showRefresh: true,
+            uniqueID: "product_id",
+            columns: [ {
+                field: 'name',
+                title: 'Product name'
+            }, {
+                field: 'temporary_status',
+                title: 'Temporary status',
+            }, {
+                field: 'category_id',
+                title: 'Category ID',
+            }, {
+                field: 'price',
+                title: 'Product price',
+            }, {
+                field: 'property1',
+                title: 'Product property1',
+            }, {
+                field: 'property2',
+                title: 'Product property2',
+            }, {
+                field: 'property3',
+                title: 'Product property3',
+            }, {
+                field: 'property4',
+                title: 'Product property4',
+            }, {
+                 field: 'property5',
+                 title: 'Product property5',
+            }, {
+                 field: 'property6',
+                 title: 'Product property6',
+            }, {
+                field: 'sale_number',
+                title: 'Sale number',
+            }, {
+                field: 'sale_amount',
+                title: 'Sale amount',
+            }, {
+                field: 'customer_rating',
+                title: 'Customer rating',
+            }, {
+                field: 'review',
+                title: 'Review',
+            }, {
+                field: 'createDate',
+                title: 'createDate',
+            }, {
+                title: 'operation',
+                field: 'product_id',
+                formatter: operation,
+            }
+            ]
+        });
+
+    }
+
+function operation(value, row, index ) {
+    var product_id = row.product_id
+    var htm = `<button class='btn btn-primary btn-edit'><a class="btn"  href='/products/product_change/${product_id}'>Change</a></button>` +
+        `<button class="btn btn-secondary"><a class="btn"  href='/products/customer/${product_id}'>detailed page</a></button>`+
+        `<button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#myModal">Delete</button>` +
+        `
+<!-- message box -->
+<div class="modal" id="myModal">
+  <div class="modal-dialog">
+    <div class="modal-content">
+
+      <!-- 模态框头部 -->
+      <div class="modal-header">
+        <h4 class="modal-title">delete check</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <!-- 模态框内容 -->
+      <div class="modal-body">
+        Are you sure delete it
+      </div>
+
+      <!-- 模态框底部 -->
+      <div class="modal-footer">
+        <button type="button" class="btn btn-success"><a href="/products/product_delete/${product_id}">Yes</a></button>
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">cancel</button>
+      </div>`
+    return htm
+}
+$('#btn_search').click(function () {
+    $("#bootstrap-table").bootstrapTable('refresh', {
+        url: '/products/ajax_products/',
+    })
+})
+</script>
+
+{% endblock %}

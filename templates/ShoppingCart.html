@@ -1,0 +1,111 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% block content %}
+    {% csrf_token %}
+    <div>
+        total_number: {{ total_number }}
+    </div>
+    <div>
+        total_amount: {{ total_amount }}
+    </div>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>id</th>
+                <th>product name</th>
+                <th>product price</th>
+                <th>product main image</th>
+                <th>count number</th>
+                <th>operation</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for item in shopping_cart %}
+            <tr>
+                <td><a href="{% url 'product_detail' item.product.product_id%}">{{ item.shopping_cart_id }}</a></td>
+                <td>{{ item.product.name }}</td>
+                <td>{{ item.product.sale_amount }}</td>
+                <td><img src="/media/{{ item.product.main_image }}" alt="main_image" width="100" height="100"></td>
+                <td><input id="{{ item.shopping_cart_id }}minus" type="button" value="-">{{ item.count_number }}<input id="{{ item.shopping_cart_id }}plus" type="button" value="+"></td>
+                <td><input id="{{ item.shopping_cart_id }}" type="button" value="Remove item"></td>
+            </tr>
+            <script>
+                $("#{{ item.shopping_cart_id }}").click(function () {
+                    $.ajax({
+                        url:"/shoppingCart/ajax_delete",
+                        type: "POST",
+                        data:{
+                            "csrfmiddlewaretoken": $("[name = 'csrfmiddlewaretoken']").val(),
+                            shopping_cart_id: {{ item.shopping_cart_id }},
+                        },
+                        success: function (data) {
+                            location.reload()
+                            alert(data["msg"])
+                    },
+                        error: function (jqXHR, textStatus, err) {
+                                console.log(arguments)
+                            }
+                    })
+                })
+            </script>
+            <script>
+                $("#{{ item.shopping_cart_id }}minus").click(function () {
+                    $.ajax({
+                        url: '/shoppingCart/ajax_minus/',
+                        type: 'POST',
+                        data: {
+                            "csrfmiddlewaretoken": $("[name = 'csrfmiddlewaretoken']").val(),
+                            shopping_cart_id: {{ item.shopping_cart_id }},
+                            count: {{ item.count_number }},
+                        },
+                        success: function (data) {
+                            if (data["warning"]){
+                                alert(data["warning"])
+                            }
+                            else {
+                                console.log(data)
+                            }
+                            location.reload()
+
+                    },
+                        error: function (jqXHR, textStatus, err) {
+                                console.log(arguments)
+                            }
+                    })
+                })
+            </script>
+            <script>
+                $("#{{ item.shopping_cart_id }}plus").click(function () {
+                    $.ajax({
+                        url: '/shoppingCart/ajax_plus/',
+                        type: 'POST',
+                        data: {
+                            "csrfmiddlewaretoken": $("[name = 'csrfmiddlewaretoken']").val(),
+                            shopping_cart_id: {{ item.shopping_cart_id }},
+                            count: {{ item.count_number }},
+                        },
+                        success: function (data) {
+                            if (data["warning"]){
+                                alert(data["warning"])
+                            }
+                            else {
+                                console.log(data)
+                            }
+                            location.reload()
+
+                    },
+                        error: function (jqXHR, textStatus, err) {
+                                console.log(arguments)
+                            }
+                    })
+                })
+            </script>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    {% if shopping_cart|length is 0 %}
+    {% else %}
+        <button class="btn btn-outline-dark"><a style="text-decoration:none" href="{% url 'add_order_list' %}">Add to orderList</a></button>
+    {% endif %}
+{% endblock %}

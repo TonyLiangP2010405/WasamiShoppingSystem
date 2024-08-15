@@ -1,0 +1,185 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% block content %}
+    {% csrf_token %}
+    <div class="container mt-3">
+        {% if request.user.is_superuser %}
+            <form class="d-flex my-4"><label for="order_id">Search Order ID:</label> <input id="order_id" class="form-control me-2" type="text" value=""> <input id="search" class="btn btn-outline-dark" type="button" value="search"></form>
+            <button id="pending" type="button" class="btn btn-outline-dark"><a href="{% url 'filter_order_pending' %}">pending orders</a></button>
+            <button id="hold" type="button" class="btn btn-outline-dark"><a href="{% url 'filter_order_hold' %}">hold orders</a></button>
+            <button id="all" type="button" class="btn btn-outline-dark"><a href="{% url 'vendor_order' %}">all orders</a></button>
+        {% else %}
+            <button id="current" type="button" class="btn btn-outline-dark"><a href="{% url 'filter_order_current' %}">current orders</a></button>
+            <button id="all" type="button" class="btn btn-outline-dark"><a href="{% url 'show_order' %}">all orders</a></button>
+        {% endif %}
+        <button id="past" type="button" class="btn btn-outline-dark"><a href="{% url 'filter_order_past' %}">past orders</a></button>
+
+    </div>
+    <table class="table table-striped" id="recover">
+        <thead>
+            <tr>
+                <th>P.O.number</th>
+                <th>shipped date</th>
+                <th>total order amount</th>
+                <th>purchase order status</th>
+                <th>purchase order date</th>
+                <th>cancelled Date</th>
+                <th>username</th>
+                {% if request.user.is_superuser %}
+                    <th>shipped</th>
+                    <th>hold or unhold</th>
+                {% endif %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for order in orders %}
+                {% if order.purchase_order_status == 'hold' %}
+                    {% if order.total_order_amount == 0 %}
+                    {% else %}
+                        <tr id="tr">
+                            <td class="check"  id="{{ order.order_id }}" data-url="{% url 'order_detail' order.order_id%}"><a href="{% url 'order_detail' order.order_id%}">{{ order.order_id }}</a></td>
+                            {% if order.shipped_date == NULL %}
+                                <td id="{{ order.order_id }}shipped">No shipped date</td>
+                            {% else %}
+                                <td id="{{ order.order_id }}shipped">{{ order.shipped_date }}</td>
+                            {% endif %}
+                            <td id="{{order.order_id}}amount">{{ order.total_order_amount }}</td>
+                            <td id="{{ order.order_id }}status">{{ order.purchase_order_status }}</td>
+                            <td id="{{ order.order_id }}date">{{ order.purchase_date }}</td>
+                            {% if order.cancelDate == NULL %}
+                                <td id="{{ order.order_id }}cancelled">
+                                    No cancelled Date
+                                    {% if order.purchase_order_status == "shipped" %}
+                                        You cannot do cancel process, it has been shipped
+                                    {% else %}
+                                        <input type="button" value="cancel" id="{{ order.order_id }}cancel">
+                                    {% endif %}
+                                </td>
+                            {% else %}
+                                <td id="{{ order.order_id }}cancelled">{{ order.cancel_user_type }} {{ order.cancelDate }}</td>
+                            {% endif %}
+                            <td id="{{ order.order_id }}user">{{ order.user.username }}</td>
+                            {% if request.user.is_superuser %}
+                                {% if order.shipped_date == NULL %}
+                                    <td id="{{ order.order_id }}shippeddate"><input id="{{ order.order_id }}change_shipped" type="button" value="Shipped"></td>
+                                {% else %}
+                                    <td id="{{ order.order_id }}shippeddate">the product has been shipped</td>
+                                {% endif %}
+                                {% if order.purchase_order_status == "pending" or order.purchase_order_status == "hold" %}
+                                    {% if order.purchase_order_status == "pending" %}
+                                        <td id="{{ order.order_id }}hold"><input id="{{ order.order_id }}change_hold" type="button" value="change_hold"></td>
+                                    {% endif %}
+                                    {% if order.purchase_order_status == "hold" %}
+                                        <td id="{{ order.order_id }}hold"><input id="{{ order.order_id }}change_unhold" type="button" value="change_unhold"></td>
+                                    {% endif %}
+                                {% else %}
+                                    <td id="{{ order.order_id }}hold">Cannot use hold or unhold</td>
+                                {% endif %}
+                            {% endif %}
+                        </tr>
+                    {% endif %}
+                {% endif %}
+                <script>
+                    $("#{{ order.order_id }}change_unhold").click(function () {
+                        $.ajax({
+                            url: '/purchase_order/ajax_unhold/',
+                            type: "POST",
+                            data: {
+                              "order_id": {{ order.order_id }},
+                              "csrfmiddlewaretoken": $("[name = 'csrfmiddlewaretoken']").val(),
+                            },
+                            success(data) {
+                                location.reload()
+                            },
+                            error(e) {
+                                console.log(e)
+                            }
+                        })
+                    })
+                </script>
+                <script>
+                    $("#{{ order.order_id }}change_hold").click(function () {
+                        $.ajax({
+                            url: '/purchase_order/ajax_hold/',
+                            type: "POST",
+                            data: {
+                              "order_id": {{ order.order_id }},
+                              "csrfmiddlewaretoken": $("[name = 'csrfmiddlewaretoken']").val(),
+                            },
+                            success(data) {
+                                location.reload()
+                            },
+                            error(e) {
+                                console.log(e)
+                            }
+                        })
+                    })
+                </script>
+                <script>
+                    $("#{{ order.order_id }}change_shipped").click(function () {
+                        $.ajax({
+                            url: '/purchase_order/ajax_shipped/',
+                            type: "POST",
+                            data: {
+                                "order_id": {{ order.order_id }},
+                                "csrfmiddlewaretoken": $("[name = 'csrfmiddlewaretoken']").val(),
+                            },
+                            success(data){
+                                location.reload()
+                            },
+                            error(e){
+                                console.log(e)
+                            }
+                        })
+                    })
+                </script>
+                <script>
+                    $('#{{ order.order_id }}cancel').click(function () {
+                        $.ajax({
+                            url: '/purchase_order/ajax_cancel/',
+                            type: "POST",
+                            data: {
+                                "order_id": {{ order.order_id }},
+                                "csrfmiddlewaretoken": $("[name = 'csrfmiddlewaretoken']").val(),
+                            },
+                            success(data){
+                                location.reload()
+                            },
+                            error(e){
+                                console.log(e)
+                            }
+                        })
+                    })
+                </script>
+            {% endfor %}
+        </tbody>
+    </table>
+    <script>
+        $("#search").click(function () {
+            $.ajax({
+                url:'/purchase_order/search/',
+                type: "POST",
+                data: {
+                    "csrfmiddlewaretoken": $("[name = 'csrfmiddlewaretoken']").val(),
+                    "order_id": $("#order_id").val(),
+                },
+                success(data){
+                    if (data["msg"] === "reload"){
+
+                    }
+                    if(data["msg"] === "success"){
+                        var order_id = $("#order_id").val()
+                        window.location = `/purchase_order/order_detail/${order_id}`
+                    }
+                    else {
+                        alert("the order ID doesn't exist")
+                    }
+
+                },
+                error(e){
+                    console.log(e)
+                },
+            })
+        })
+    </script>
+{% endblock %}

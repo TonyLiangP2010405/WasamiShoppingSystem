@@ -1,0 +1,48 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% block content %}
+    <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+    {% for product in products %}
+        <a  href="{% url 'product_detail' product.product_id %}">{{ product.product_id }}</a>
+        {{ product.name }}
+        {{ product.category.name }}
+        {{ product.category.category_id }}
+        {{ product.price }}
+        {% if  product.main_image|length is 0 %}
+            <span>the main image is empty</span>
+        {% else %}
+            <img src="/media/{{ product.main_image }}" alt="main_image">
+        {% endif %}
+    {% endfor %}
+    <nav aria-label="Contacts Page Navigation">
+        <ul class="pagination justify-content-center m-2">
+            {% if products.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ products.previous_page_number }}">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+            {% for pg in products.paginator.page_range %}
+                {% if products.number == pg %}
+                    <li class="page-item active">
+                        <a class="page-link" href="">{{ pg }}</a>
+                    </li>
+                {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ pg }}">
+                            {{ pg }}
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+            {% if products.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ products.next_page_number }}">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </nav>
+{% endblock %}

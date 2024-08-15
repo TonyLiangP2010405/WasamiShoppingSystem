@@ -1,0 +1,171 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% block content %}
+    {% csrf_token %}
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>order_id</th>
+                <th>total_quantity</th>
+                <th>total_order_amount</th>
+                <th>purchase_order_status</th>
+                <th>shipped_date</th>
+                <th>cancelDate</th>
+                <th>user</th>
+                {% for product in product_list %}
+                    <th>product information</th>
+                {% endfor %}
+                {% if request.user.is_superuser %}
+                    <th>shipped</th>
+                    <th>hold or unhold</th>
+                {% endif %}
+                <th>Purchase Date</th>
+                <th>Shipped Address</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td>{{ order.order_id }}</td>
+                <td>{{ total_quantity }}</td>
+                <td>{{ order.total_order_amount }}</td>
+                <td>{{ order.purchase_order_status }}</td>
+                {% if order.shipped_date == NULL %}
+                    <td id="{{ order.order_id }}">No shipped date</td>
+                {% else %}
+                    {% if order.cancelDate == NULL %}
+                        <td id="{{ order.order_id }}">{{ order.shipped_date }}</td>
+                    {% else %}
+                        <td id="{{ order.order_id }}">The order has been cancelled, doesn't show shipped date</td>
+                    {% endif %}
+                {% endif %}
+                {% if order.cancelDate == NULL %}
+                    <td id="{{ order.order_id }}cancelled">
+                        No cancelled Date
+                        {% if order.purchase_order_status == "shipped" %}
+                            You cannot do cancel process, it has been shipped
+                        {% else %}
+                            <input type="button" value="cancel" id="{{ order.order_id }}cancel"></td>
+                        {% endif %}
+                {% else %}
+                    <td id="{{ order.order_id }}cancelled">{{ order.cancel_user_type }} {{ order.cancelDate }}</td>
+                {% endif %}
+                <td>{{ order.user.username }}</td>
+                {% for product in product_list %}
+                    <td>
+                        <div>product Name: {{ product.name }}</div>
+                        <div>product Quantity: {{ product.sale_number }}</div>
+                        <div>product Price: {{ product.price }}</div>
+                        <div>subtotal: {{ product.sale_amount }}</div>
+                        <div>
+                            {% if request.user.is_superuser %}
+                            {% else %}
+                                <button class="btn btn-outline-dark" id="review" type="button"><a style="text-decoration: none" href="{% url 'edit_review_rating' product.product_id order.order_id%}">Edit review and customer rating</a></button>
+                            {% endif %}
+                        </div>
+                    </td>
+                {% endfor %}
+            {% if request.user.is_superuser %}
+                {% if order.shipped_date == NULL and order.cancelDate == NULL %}
+                    <td><input type="button" id="change_shipped" value="shipped"></td>
+                {% else %}
+                    <td>No Process can do</td>
+                {% endif %}
+                {% if order.shipped_date == NULL %}
+                    {% if order.purchase_order_status == "pending" or order.purchase_order_status == "hold" %}
+                        {% if order.purchase_order_status == "pending" %}
+                            <td id="{{ order.order_id }}hold"><input id="{{ order.order_id }}change_hold" type="button" value="change_hold"></td>
+                        {% endif %}
+                        {% if order.purchase_order_status == "hold" %}
+                            <td id="{{ order.order_id }}hold"><input id="{{ order.order_id }}change_unhold" type="button" value="change_unhold"></td>
+                        {% endif %}
+                    {% else %}
+                        <td id="{{ order.order_id }}hold">Cannot use hold or unhold</td>
+                    {% endif %}
+                {% else %}
+                    <td id="{{ order.order_id }}hold">Cannot use hold or unhold</td>
+                {% endif %}
+            {% endif %}
+                <td>Purchase Date: {{ order.purchase_date }}</td>
+                <td>
+                    <div>City: {{ address.receiver_city }}</div>
+                    <div>Province: {{ address.receiver_province }}</div>
+                    <div>Restrict: {{ address.receiver_district }}</div>
+                    <div>Detail address: {{ address.receiver_address }}</div>
+                    <div>Zip: {{ address.receiver_zip }}</div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <script>
+        $("#{{ order.order_id }}change_unhold").click(function () {
+            $.ajax({
+                url: '/purchase_order/ajax_unhold/',
+                type: "POST",
+                data: {
+                  "order_id": {{ order.order_id }},
+                  "csrfmiddlewaretoken": $("[name = 'csrfmiddlewaretoken']").val(),
+                },
+                success(data) {
+                    location.reload()
+                },
+                error(e) {
+                    console.log(e)
+                }
+            })
+        })
+    </script>
+    <script>
+        $("#{{ order.order_id }}change_hold").click(function () {
+            $.ajax({
+                url: '/purchase_order/ajax_hold/',
+                type: "POST",
+                data: {
+                  "order_id": {{ order.order_id }},
+                  "csrfmiddlewaretoken": $("[name = 'csrfmiddlewaretoken']").val(),
+                },
+                success(data) {
+                    location.reload()
+                },
+                error(e) {
+                    console.log(e)
+                }
+            })
+        })
+    </script>
+    <script>
+        $("#change_shipped").click(function () {
+            $.ajax({
+                url: '/purchase_order/ajax_shipped/',
+                type: "POST",
+                data: {
+                    "order_id": {{ order.order_id }},
+                    "csrfmiddlewaretoken": $("[name = 'csrfmiddlewaretoken']").val(),
+                },
+                success(data){
+                    location.reload()
+                },
+                error(e){
+                    console.log(e)
+                }
+            })
+        })
+    </script>
+    <script>
+        $('#{{ order.order_id }}cancel').click(function () {
+            $.ajax({
+                url: '/purchase_order/ajax_cancel/',
+                type: "POST",
+                data: {
+                    "order_id": {{ order.order_id }},
+                    "csrfmiddlewaretoken": $("[name = 'csrfmiddlewaretoken']").val(),
+                },
+                success(data){
+                    location.reload()
+                },
+                error(e){
+                    console.log(e)
+                }
+            })
+        })
+    </script>
+{% endblock %}
