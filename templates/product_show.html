@@ -195,29 +195,7 @@ function operation(value, row, index ) {
     var product_id = row.product_id
     var htm = `<button class='btn btn-primary btn-edit'><a class="btn"  href='/products/product_change/${product_id}'>Change</a></button>` +
         `<button class="btn btn-secondary"><a class="btn"  href='/products/customer/${product_id}'>detailed page</a></button>`+
-        `<button class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#myModal">Delete</button>` +
-        `
-<!-- message box -->
-<div class="modal" id="myModal">
-  <div class="modal-dialog">
-    <div class="modal-content">
-
-      <!-- 模态框头部 -->
-      <div class="modal-header">
-        <h4 class="modal-title">delete check</h4>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-      </div>
-
-      <!-- 模态框内容 -->
-      <div class="modal-body">
-        Are you sure delete it
-      </div>
-
-      <!-- 模态框底部 -->
-      <div class="modal-footer">
-        <button type="button" class="btn btn-success"><a href="/products/product_delete/${product_id}">Yes</a></button>
-        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">cancel</button>
-      </div>`
+        `<button class="btn btn-warning"><a href="/products/product_delete/${product_id}">Delete</a></button>`
     return htm
 }
 $('#btn_search').click(function () {

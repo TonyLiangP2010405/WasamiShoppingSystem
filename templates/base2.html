@@ -3,13 +3,133 @@
 <html lang="zxx">
 
 <head>
+     <style>
+        /* Importing fonts from Google */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
+/* Reseting */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    background: #ecf0f3;
+}
+
+.wrapper {
+    max-width: 350px;
+    min-height: 500px;
+    margin: 80px auto;
+    padding: 40px 30px 30px 30px;
+    background-color: #ecf0f3;
+    border-radius: 15px;
+    box-shadow: 13px 13px 20px #cbced1, -13px -13px 20px #fff;
+}
+
+.logo {
+    width: 80px;
+    margin: auto;
+}
+
+.logo img {
+    width: 100%;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 50%;
+    box-shadow: 0px 0px 3px #5f5f5f,
+        0px 0px 0px 5px #ecf0f3,
+        8px 8px 15px #a7aaa7,
+        -8px -8px 15px #fff;
+}
+
+.wrapper .name {
+    font-weight: 600;
+    font-size: 1.4rem;
+    letter-spacing: 1.3px;
+    padding-left: 10px;
+    color: #555;
+}
+
+.wrapper .form-field input {
+    width: 100%;
+    display: block;
+    border: none;
+    outline: none;
+    background: none;
+    font-size: 1.2rem;
+    color: #666;
+    padding: 10px 15px 10px 10px;
+    /* border: 1px solid red; */
+}
+
+.wrapper .form-field {
+    padding-left: 10px;
+    margin-bottom: 20px;
+    border-radius: 20px;
+    box-shadow: inset 8px 8px 8px #cbced1, inset -8px -8px 8px #fff;
+}
+
+.wrapper .form-field .fas {
+    color: #555;
+}
+
+.wrapper .btn {
+    box-shadow: none;
+    width: 100%;
+    height: 40px;
+    background-color: #03A9F4;
+    color: #fff;
+    border-radius: 25px;
+    box-shadow: 3px 3px 3px #b1b1b1,
+        -3px -3px 3px #fff;
+    letter-spacing: 1.3px;
+}
+
+.wrapper .btn:hover {
+    background-color: #039BE5;
+}
+
+.wrapper a {
+    text-decoration: none;
+    font-size: 0.8rem;
+    color: #03A9F4;
+}
+
+.wrapper a:hover {
+    color: #039BE5;
+}
+
+@media(max-width: 380px) {
+    .wrapper {
+        margin: 30px 20px;
+        padding: 40px 15px 15px 15px;
+    }
+}
+    </style>
     <meta charset="UTF-8">
     <meta name="description" content="Ogani Template">
     <meta name="keywords" content="Ogani, unica, creative, html">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Wasami</title>
-
+    <script src="https://use.fontawesome.com/releases/v5.7.2/css/all.css"></script>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'plugins/bootstrap/css/bootstrap.css' %}">
+    <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.js' %}"></script>
+    <script src="{% static 'plugins/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'plugins/bootstrap/js/bootstrap.bundle.js' %}"></script>
+    <script src="{% static 'plugins/bootstrap-table/bootstrap-table.min.css' %}"></script>
+    <script src="https://cdn.staticfile.org/twitter-bootstrap/5.1.1/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+	<script src="https://kit.fontawesome.com/ccbd4d6bc1.js" crossorigin="anonymous"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-w76AqPfDkMBDXo30jS1Sgez6pr3x5MlQ1ZAGC+nuZB+EYdgRZgiwxhTBTkF7CXvN" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;900&display=swap" rel="stylesheet">
 
@@ -36,14 +156,9 @@
     <div class="hamburger__menu__overlay"></div>
     <div class="hamburger__menu__wrapper">
         <div class="hamburger__menu__logo">
-            <a href="{% url 'homePage' %}"><img src="{% static 'img/logo.png' %}" alt=""></a>
+            <a href="{% url 'homePage' %}"><img src="{% static 'img/log.png' %}" alt=""></a>
         </div>
         <div class="hamburger__menu__cart">
-            <ul>
-                <li><a href="#"><i class="fa fa-heart"></i> <span>1</span></a></li>
-                <li><a href="#"><i class="fa fa-shopping-bag"></i> <span>3</span></a></li>
-            </ul>
-            <div class="header__cart__price"><span>$10.00</span></div>
         </div>
         <div class="hamburger__menu__widget">
             <div class="header__top__right__language">
@@ -65,9 +180,10 @@
                 {% if request.user.is_superuser%}
                     <li><a href="#">Pages</a>
                     <ul class="header__menu__dropdown">
-                        <li><a href="{% url 'products' %}">vender check product</a></li>
-                        <li><a href="./checkout.html">Check Out</a></li>
-                        <li><a href="./blog-details.html">Blog Details</a></li>
+                        <li><a href="{% url 'add_product' %}">Vendor Add Product</a></li>
+                        <li><a href="{% url 'products' %}">Vendor Check Product</a></li>
+                        <li><a href="{% url 'category' %}">Vendor Check Category</a></li>
+                        <li><a href="{% url 'add_category' %}">Vendor Add Category</a></li>
                     </ul>
                 </li>
                 {% endif %}
@@ -134,20 +250,23 @@
             <div class="row">
                 <div class="col-lg-3">
                     <div class="header__logo">
-                        <a href="{% url 'homePage' %}"><img src="{% static 'img/logo.png' %}" alt=""></a>
+                        <a href="{% url 'homePage' %}"><img src="{% static 'img/log.png' %}" alt=""></a>
                     </div>
                 </div>
                 <div class="col-lg-6">
                     <nav class="header__menu">
                         <ul>
                             <li class="active"><a href="{% url 'homePage' %}">Home</a></li>
-                            <li><a href="#">Pages</a>
-                                <ul class="header__menu__dropdown">
-                                    <li><a href="{% url 'products' %}">vender check product</a></li>
-                                    <li><a href="">Product Detail</a></li>
-                                    <li><a href="./checkout.html">Check Out</a></li>
-                                </ul>
-                            </li>
+                            {% if request.user.is_superuser%}
+                                <li><a href="#">Pages</a>
+                                    <ul class="header__menu__dropdown">
+                                        <li><a href="{% url 'add_product' %}">Vendor Add Product</a></li>
+                                        <li><a href="{% url 'products' %}">Vendor Check Product</a></li>
+                                        <li><a href="{% url 'category' %}">Vendor Check Category</a></li>
+                                        <li><a href="{% url 'add_category' %}">Vendor Add Category</a></li>
+                                    </ul>
+                                </li>
+                            {% endif %}
                             <li><a href="{% url 'contact_page' %}">Contact</a></li>
                         </ul>
                     </nav>
@@ -224,7 +343,7 @@
                 <div class="col-lg-4 col-md-6 col-sm-6">
                     <div class="footer__about">
                         <div class="footer__about__logo">
-                            <a href="{% url 'homePage' %}"><img src="{% static 'img/logo.png' %}" alt=""></a>
+                            <a href="{% url 'homePage' %}"><img src="{% static 'img/log.png' %}" alt=""></a>
                         </div>
                         <ul>
                             <li>Phone: +8613925266645</li>
@@ -236,18 +355,12 @@
                     <div class="footer__widget">
                         <h6>Useful Links</h6>
                         <ul>
-                            <li><a href="#">About Us</a></li>
-                            <li><a href="#">About Our Shop</a></li>
-                        </ul>
-                        <ul>
                             <li><a href="{% url 'contact_page' %}">Contact</a></li>
                         </ul>
                     </div>
                 </div>
                 <div class="col-lg-4 col-md-12">
                     <div class="footer__widget">
-                        <h6>Join Our Newsletter Now</h6>
-                        <p>Get E-mail updates about our latest shop and special offers.</p>
                         <div class="footer__widget__social">
                         </div>
                     </div>

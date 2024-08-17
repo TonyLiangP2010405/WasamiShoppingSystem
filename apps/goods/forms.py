@@ -78,7 +78,6 @@ class ProductInfo(forms.ModelForm):
                 "class": "form-control"
             }),
             "main_image": forms.widgets.FileInput(attrs={
-                "class": 'custom-file-input'
             }),
             "category": forms.widgets.Select(attrs={
                 "class": "form-control"
@@ -87,16 +86,12 @@ class ProductInfo(forms.ModelForm):
                 "class": "form-control"
             }),
             "photo1": forms.widgets.FileInput(attrs={
-                "class": 'custom-file-input'
             }),
             "photo2": forms.widgets.FileInput(attrs={
-                "class": 'custom-file-input'
             }),
             "photo3": forms.widgets.FileInput(attrs={
-                "class": 'custom-file-input'
             }),
             "photo4": forms.widgets.FileInput(attrs={
-                "class": 'custom-file-input'
             }),
         }
         error_messages = {
@@ -106,17 +101,17 @@ class ProductInfo(forms.ModelForm):
             "price": {'required': 'the product price cannot be empty',
                       'max_digits': 'the max digits of product price is 32',
                       'decimal_places': 'the decimal place of product price is 8'},
-            "property1": {'required': 'the property1 of product cannot be empty',
+            "property1": {
                           'max_length': 'the max length of property1 is 5000'},
-            "property2": {'required': 'the property2 of product cannot be empty',
+            "property2": {
                           'max_length': 'the max length of property2 is 5000'},
-            "property3": {'required': 'the property3 of product cannot be empty',
+            "property3": {
                           'max_length': 'the max length of property3 is 5000'},
-            "property4": {'required': 'the property4 of product cannot be empty',
+            "property4": {
                           'max_length': 'the max length of property4 is 5000'},
-            "property5": {'required': 'the property5 of product cannot be empty',
+            "property5": {
                           'max_length': 'the max length of property5 is 5000'},
-            "property6": {'required': 'the property6 of product cannot be empty',
+            "property6": {
                           'max_length': 'the max length of property6 is 5000'},
             "createDate": {'required': 'the create date of product cannot be empty'},
         },

@@ -30,6 +30,7 @@ def home_page(request):
 def contact_page(request):
     return render(request, "contact.html")
 
+
 def home_page_filter(request):
     name = request.GET.get("name", '')
     datas = Product.objects.all().order_by("price")

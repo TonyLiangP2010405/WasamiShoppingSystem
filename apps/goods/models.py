@@ -2,6 +2,7 @@ from datetime import datetime
 from django.db import models
 from apps.users.models import MyUser
 
+
 # Create your models here.
 
 
@@ -19,19 +20,18 @@ class ProductsCategory(models.Model):
         db_table = 'd_productsCategory'
 
 
-
 class Product(models.Model):
     product_id = models.IntegerField(primary_key=True)
     name = models.CharField(max_length=50)
     category = models.ForeignKey(ProductsCategory, on_delete=models.DO_NOTHING)
     main_image = models.ImageField(upload_to='productImage')
     price = models.DecimalField(max_digits=32, decimal_places=8)
-    property1 = models.CharField(max_length=5000)
-    property2 = models.CharField(max_length=5000)
-    property3 = models.CharField(max_length=5000)
-    property4 = models.CharField(max_length=5000)
-    property5 = models.CharField(max_length=5000)
-    property6 = models.CharField(max_length=5000)
+    property1 = models.CharField(max_length=5000, null=True, blank=True)
+    property2 = models.CharField(max_length=5000, null=True, blank=True)
+    property3 = models.CharField(max_length=5000,null=True, blank=True)
+    property4 = models.CharField(max_length=5000, null=True, blank=True)
+    property5 = models.CharField(max_length=5000, null=True, blank=True)
+    property6 = models.CharField(max_length=5000, null=True, blank=True)
     sale_number = models.IntegerField()
     sale_amount = models.IntegerField()
     rating_choice = (
@@ -59,4 +59,3 @@ class Product(models.Model):
         verbose_name = 'product'
         verbose_name_plural = 'products'
         db_table = 'd_product'
-
