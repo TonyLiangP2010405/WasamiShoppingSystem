@@ -16,4 +16,5 @@ urlpatterns = [
     path('filter_search_product_name/', views.filter_search_homepage, name='homePage_filter_product_name'),
     path('filter_search_price_homepage/', views.filter_search_price_homepage, name='filter_search_price_homepage'),
     path('filter_search_price_homepage_desc/', views.filter_search_price_homepage_desc, name='filter_search_price_homepage_desc'),
+    path('contact/', views.contact_page, name='contact_page'),
 ]
